@@ -4,8 +4,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\SocialLoginController;
 //use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
 
 /*
@@ -24,20 +24,23 @@ Route::group(['prefix' => 'v1'], function () {
         
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-
     Route::post('password/forgot-password', [NewPasswordController::class, 'forgotPassword']);
     Route::post('reset', [NewPasswordController::class, 'reset']);
+
+   // social login impimentation
+    Route::get('login/{driver}', [SocialLoginController::class, 'redirectToProvider']);
+    Route::get('login/{driver}/callback', [SocialLoginController::class, 'handleProviderCallback']);
 
 });
 
  Route::group(  ['middleware'=> ['auth:sanctum'],  'prefix' => 'v1' ], function () {  
+
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/email/verify-email/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
    
  });
-         // social login impimentation
-// Route::get('redirect/{driver}', 'Auth\LoginController@redirectToProvider');
-// Route::get('{driver}/callback', 'Auth\LoginController@handleProviderCallback');
+      
+
 
 Route::middleware('auth:sanctum','verified')->get('/user', function (Request $request) {
     return $request->user();
