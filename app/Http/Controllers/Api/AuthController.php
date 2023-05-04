@@ -15,28 +15,22 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 class AuthController extends Controller
 {   
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+   
     public function register(Request $request)
     {
   
         $formFields = $request->validate([
             'name' => ['required', 'min:3'],
             'email' => ['required', 'email', Rule::unique('users', 'email')],
-            'password' => 'required|min:6'
+            'password' => 'required|min:6|confirmed'
         ]);
 
         // Hash Password
         $formFields['password'] = bcrypt($formFields['password']);
-
         $user = User::create($formFields);
 
         event(new Registered($user));
-       $token = $user->createToken('myapptoken')->plainTextToken;
+        $token = $user->createToken('myapptoken')->plainTextToken;
        
         $response = [
             'message' => 'Registration successful. Please check your email for verification link.',
@@ -51,14 +45,20 @@ class AuthController extends Controller
     public function verifyEmail(EmailVerificationRequest $request)
      {
         if ($request->user()->hasVerifiedEmail()) {
-            return [
-                'message' => 'Email already verified'
-            ];
+            return [ 'message' => 'Email already verified'  ];
+           // return redirect(env('FRONT_URL') . '/email/verify/already-success');
         }
         $request->fulfill();
+      //  return redirect(env('FRONT_URL') . '/email/verify/success');
         return response()->json(['message' => 'Email verified successfully.'], 200);
     }
-    // public function verify(EmailVerificationRequest $request)
+        
+    
+        /********** ***********
+         * Alterbative way of verifying email
+         * ************************* */
+
+// public function verify(EmailVerificationRequest $request)
     // {
     //     if ($request->user()->hasVerifiedEmail()) {
     //         return [   'message' => 'Email already verified'     ];
