@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 
-class AuthController extends Controller
+class StudentAuthController extends Controller
 {   
 
    
@@ -19,16 +19,15 @@ class AuthController extends Controller
   
         $formFields = $request->validate([
             'name' => ['required', 'min:3'],
-            'staff_id' =>'required|unique:users',
-            'email' => ['required', 'email', Rule::unique('users', 'email')],
-            'password' => 'required|min:6|confirmed'
+            'matric_number' => 'required|unique:students',
+            'password' => 'required|min:6'
         ]);
 
         // Hash Password
         $formFields['password'] = bcrypt($formFields['password']);
         $user = User::create($formFields);
 
-        event(new Registered($user));
+        // event(new Registered($user));
         $token = $user->createToken('myapptoken')->plainTextToken;
        
         $response = [
@@ -38,43 +37,22 @@ class AuthController extends Controller
 
     }
 
-    public function verifyEmail($id, $hash)
-    {
-        $user = User::find($id);
-        abort_if(!$user, 405);
-        abort_if(!hash_equals($hash, sha1($user->getEmailForVerification())), 405);
-
-        if (!$user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
-            event(new Verified($user));        
-            }
-            return [   'message' => 'Email verified', 'status'=>true     ];
-        
-    }
-
-
       // Show Login Form
       public function login(Request $request) {
         $formFields = $request->validate([
-            'staff_id' => 'required',
+            'matric_number' => 'required',
             'password' => 'required|min:6'
         ]);
 
         // Hash Password
-        $user = User::where('staff_id', $formFields['staff_id'])->first();
+        $user = User::where('matric_number', $formFields['matric_number'])->first();
 
         if(!$user || !Hash::check($formFields['password'], $user->password)) {
             return response([
                 'message' => 'Invalid login creds'
             ], 401);
         }
-        if($user->email_verified_at == null) {
-            $user->sendEmailVerificationNotification();
-            return response([
-                'message' => 'Please check your email for verification link',
-                'status'=>false
-            ], 401);
-        }
+         
        $token = $user->createToken('myapptoken')->plainTextToken;
        
         $response = [ 
