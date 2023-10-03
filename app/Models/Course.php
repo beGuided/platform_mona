@@ -26,4 +26,8 @@ class Course extends Model
         return $this->hasMany(Department::class, 'department_id');
     }
 
+      // Relationship To Course
+      public function students() {
+        return $this->hasMany(Student::class, 'student_id');
+    }
 }

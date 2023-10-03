@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Models\Level;
+use App\Models\Student;
 use App\Models\User;
 use App\Models\Profile;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
+use App\Models\Organization;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -19,35 +23,67 @@ class ProfileController extends Controller
     }
 
 
-    //Show single profile
-    public function show(Request $request ) {
+    /*****************
+     * WILL RECONSIDER IF ONLY STUDENT SHOULD HAVE PROFILE
+     *********************************/
 
-       $user = User::with('profile')->find($request->id);
-        if(empty( $user->profile )){
+    //Show single Student profile
+    public function studentProfile(Request $request ) {
+       $student = Student::with('profile')->find($request->id);
+
+       // WILL CONSIDER IF ONLY STUDENT SHOULD HAVE PROFILE
+        if(empty( $student->profile)){
             return response()->json(
                 ['message' => "You don't have a profile, please create one",
                 'status'=>true   ]);
         }
-        $profile = $user->profile;
+        $profile = $student->profile;
         return response()->json(['Profile' => $profile,'status'=>true], 200);
     }
 
+      //Show single Staff profile
+      public function staffProfile(Request $request ) {
+        $user = User::with('profile')->find($request->id);
+       
+          if(empty( $user->profile)){
+              return response()->json(
+                  ['message' => "You don't have a profile, please create one",
+                  'status'=>true   ]);
+          }
+          $profile = $user->profile;
+          return response()->json(['Profile' => $profile,'status'=>true], 200);
+      }
+
+
     // Store profile Data
     public function store(Request $request) {
-      $profile =  $request->validate([
+
+        $dept = Department::all();
+      //  $org = Organization::all();
+        $level = Level::all();
+        if ($dept->isEmpty() ) {
+            return response()->json(
+                ['message' => "Department cannot be empty",
+                'status'=>false ],401);
+        }
+        if ($level->isEmpty()) {
+            return response()->json(
+                ['message' => "level cannot be empty",
+                'status'=>false ],401);
+        }
+        
+      $validatedField =  $request->validate([
             'gender' => 'required',
             'address' => 'required',
             'phone_number' => 'required',
             'date_of_birth' => 'nullable',
-            'level_id' => 'required',
-            'email' => 'required|unique:profiles',
-            'state_of_origin' => 'requires',
+            'level_id' => 'nullable',
+            'email' => 'nullable|unique:profiles',
+            'state_of_origin' => 'required',
+            'department_id' =>'required'
           
         ]);
-
-       
-    $userProfile = Profile::create($profile);
-           
+    $userProfile = Profile::create($validatedField);     
     if($request->hasFile('image')) {
         $userProfile->image = $request->file('image')->store('image', 'public');
     }

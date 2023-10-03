@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Models\Role;
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -36,15 +38,43 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $role = Role::all();
+        if(empty( $role)){
+            return response()->json(
+                ['message' => "Role is empty, please create ROle",
+                'status'=>true   ]);
+        }
+        
         $formFields = $request->validate([
             'name' => ['required', 'min:3'],
-            'email' => ['required', 'email', Rule::unique('users', 'email')],
-            'password' => 'required|min:6|confirmed'
+            'staff_id'=>'required',
+            'role_id'=>'required',
+            // 'email' => ['required', 'email', Rule::unique('users', 'email')],
+            'password' => 'required|min:6'
         ]);
 
         $user = User::create($formFields);
 
         return response()->json(['data'=>$user,'message'=>'user Created '],200);
+    }
+
+    public function update(Request $request)
+    {
+        $this->$request->validate([
+            'name' => ['string', 'min:3'],
+            'staff_id'=>'string',
+            'role_id'=>'',
+            // 'email' => ['required', 'email', Rule::unique('users', 'email')],
+       
+        ]);
+
+        $user = User::find($request->id);
+        $user->name =$request->name;
+        $user->staff_id =$request->staff_id;
+        $user->role_id =$request->role_id;
+        $user->save();
+
+        return response()->json(['data'=>$user,'message'=>'user updated '],200);
     }
 
     public function makeAdmin(Request $request)
@@ -66,18 +96,16 @@ class UserController extends Controller
 
 
 
-    // Delete profile
+    // Delete user with profile
     public function delete(Request $request) {  
         
-        $user = User::with('profile','arts')->find($request->id);
+        $user = User::with('profile')->find($request->id);
       
         if(empty( $user)){
             return response()->json(
                 [ 'message' => "user do not exist",
                   'status'=>false ]);
         }
-
-
          if(!empty($user->profile->image)) {
           if($user->profile->image && Storage::disk('public')->exists($user->profile->image)) {
             Storage::disk('public')->delete($user->profile->image);            
@@ -86,25 +114,7 @@ class UserController extends Controller
                 
                 }
              }
-      
-            if(!empty($user->arts)) {
-                foreach($user->arts as $art){
 
-                    if($art->art_image && Storage::disk('public')->exists($art->art_image)) {
-                        Storage::disk('public')->delete($art->art_image);
-                        $art->delete();
-                        }
-                }
-                
-             }
-
-        // if($user->profile->image && Storage::disk('public')->exists($user->profile->image)) {
-        //     Storage::disk('public')->delete($user->profile->image);     
-        //  }
-
-        //  if($user->arts->art_image && Storage::disk('public')->exists($user->arts->art_image)) {
-        //       Storage::disk('public')->delete($user->arts->art_image);
-        //  }
 
          $user->delete();
          return response()->json([ 'message'=>'User deleted successfully!','status'=>true],200);

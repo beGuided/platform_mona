@@ -9,7 +9,7 @@ class Department extends Model
 {
     use HasFactory;
 
-    protected $fillable  = [ 'title'];
+    protected $fillable  = [ 'name'];
        
      // Relationship To User
      public function user() {
@@ -18,17 +18,12 @@ class Department extends Model
 
       // Relationship To student
       public function student() {
-        return $this->belongsTo(User::class, 'student_id');
+        return $this->belongsTo(Student::class, 'student_id');
     }
-
-      // Relationship To User
-         public function student() {
-            return $this->belongsTo(Student::class, 'sudent_id');
-        }
 
          // Relationship To Course
        public function courses() {
-        return $this->hasMany(Result::class, 'department_id');
+        return $this->hasMany(Course::class, 'Course_id');
     }
     
 }

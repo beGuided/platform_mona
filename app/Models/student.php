@@ -30,7 +30,7 @@ class student extends Model
      }
       // Relationship To Course
       public function courses() {
-         return $this->hasMany(Course::class, 'student_id');
+         return $this->hasMany(Course::class, 'course_id');
      }
      
     

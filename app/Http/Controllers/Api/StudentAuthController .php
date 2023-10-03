@@ -14,7 +14,7 @@ class StudentAuthController extends Controller
 {   
 
    
-    public function register(Request $request)
+    public function registerStudent(Request $request)
     {
   
         $formFields = $request->validate([
@@ -31,14 +31,14 @@ class StudentAuthController extends Controller
         $token = $user->createToken('myapptoken')->plainTextToken;
        
         $response = [
-            'message' => 'Registration successful. Please check your email for verification link.',
+             'message' => 'Registration successful.',
              'user'=> $user, 'token' => $token   ];
         return response($response, 201); 
 
     }
 
       // Show Login Form
-      public function login(Request $request) {
+      public function loginStudent(Request $request) {
         $formFields = $request->validate([
             'matric_number' => 'required',
             'password' => 'required|min:6'

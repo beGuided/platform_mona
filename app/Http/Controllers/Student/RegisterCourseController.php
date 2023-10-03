@@ -18,7 +18,7 @@ class CourseController extends Controller
 
      public function __construct()
     {
-     $this->middleware('admin')->only([ 'show','update','delete', 'store',  ]);
+     $this->middleware('admin')->only([ 'index','filter','delete', 'store',  ]);
    
     }
  
@@ -29,7 +29,7 @@ class CourseController extends Controller
     }
 
 
-    public function show(Request $request, $student_id,$semester,$level)
+    public function show(Request $request, $mat,$semester,$level)
     {
          // Make sure logged in user is owner
          if($request->id != auth()->id()) {
@@ -37,12 +37,12 @@ class CourseController extends Controller
         }
 
         // find Course by matric and email
-        $student = DB::table('course_students')
-                ->where($student->student_id, '=', $student_id)
+        $Course = DB::table('Courses')
+                ->where('matric_number', '=', $mat)
                 ->where('level', '=', $level)
                 ->where('semester', '=', $semester)
                 ->get();
-        return response()->json(['Course'=>$student],200);
+        return response()->json(['Course'=>$Course],200);
     }
 
 
@@ -64,12 +64,14 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         $formFields = $request->validate([ 
-            'title' => 'required|unique:Courses|string',
-            'code' =>'required|string',
-            'unit' =>'required|integer',  
-            'level' =>'required', 
-            'semester' =>'required|string',          
-         
+            'name' => 'required|string',
+            'matric_number' =>'required|string',
+            'student_email' =>'required|unique:Courses|string',  
+            'semester' =>'required|string',         
+            'course_id' =>'required',  
+            'score' =>'required|string',  
+            'year' => 'required|string',  
+            
         ]); 
 
         $Course = Course::create($formFields);
@@ -80,17 +82,22 @@ class CourseController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [ 
-            'title' => 'unique:Courses|string',
-            'code' =>'string',
-            'unit' =>'',  
-            'level' =>'string',  
-            'semester' =>'string',    
+            'name' => 'string',
+            'matric_number' =>'',
+            'student_email' =>'unique:Courses',  
+            'semester' =>'string',         
+            'course_id' =>'',  
+            'score' =>'string',  
+            'year' => 'string',  
         ]); 
         $Course =  Course::find($id);
-        $Course->title = $request->title;
-        $Course->code = $request->code;
-        $Course->unit = $request->unit;
-        $Course->level = $request->level;
+        $Course->name = $request->name;
+        $Course->matric_number = $request->matric_number;
+        $Course->student_email = $request->student_email;
+        $Course->semester = $request->semester;
+        $Course->course_id = $request->course_id;
+        $Course->score = $request->score;
+        $Course->year = $request->year;
         $Course->save();
         return response()->json(['data'=>$Course,'message'=>'Course updated '],201);
     }

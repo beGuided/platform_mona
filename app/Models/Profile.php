@@ -9,15 +9,15 @@ class Profile extends Model
 {
     use HasFactory;
 
-    protected $fillable  = ['first_name', 'middle_name','last_name','state_of_origin','matric_number'];
+    protected $fillable  = ['gender', 'address','phone_number','date_of_birth','level_id','email','state_of_origin','department_id'];
      
      // Relationship To User
      public function user() {
         return $this->belongsTo(User::class, 'user_id');
     }
       
-     // Relationship To User
+     // Relationship To Student
      public function student() {
-        return $this->belongsTo(User::class, 'student_id');
+        return $this->belongsTo(Student::class, 'student_id');
     }
 }

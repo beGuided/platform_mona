@@ -20,8 +20,9 @@ class UserTableSeeder extends Seeder
         if(!$user){
             User::create([
             'name'=> 'Admin',
+            'staff_id'=>'123',
             'email'=> 'admin@email.com',
-            // 'role'=>'admin',
+            'role_id'=>1,
             'email_verified_at' => now(),
             'password' => Hash::make('secret')
             ]);

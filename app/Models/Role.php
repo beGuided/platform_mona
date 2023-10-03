@@ -9,7 +9,7 @@ class Role extends Model
 {
     use HasFactory;
 
-    protected $fillable  = [ 'title'];
+    protected $fillable  = [ 'title','organization_id','permission_id'];
 
        
      // Relationship To User
@@ -20,6 +20,11 @@ class Role extends Model
      // Relationship To User
      public function organization() {
         return $this->belongsTo(Organization::class, 'organization_id');
+    }
+    
+       // Relationship To User
+       public function permissions() {
+        return $this->hasMany(Permission::class, 'permission_id');
     }
 
 }

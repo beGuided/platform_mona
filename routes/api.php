@@ -1,16 +1,21 @@
 <?php
 
-use App\Models\User;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\RoleController;
-//use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ResultController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\StudentController;
+use App\Http\Controllers\Student\CourseController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\SocialLoginController;
+use App\Http\Controllers\User\DepartmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,11 +31,11 @@ use App\Http\Controllers\Api\SocialLoginController;
 
 Route::group(['prefix' => 'v1'], function () {
         
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register-staff', [AuthController::class, 'registerStaff']);
+    Route::post('/login-staff', [AuthController::class, 'loginStaff']);
     // student auth routh
-    Route::post('/register', [StudentController::class, 'register']);
-    Route::post('/login', [StudentController::class, 'login']);
+    Route::post('/register-student', [StudentController::class, 'registerStudent']);
+    Route::post('/login-student', [StudentController::class, 'loginStudent']);
 
     Route::post('password/forgot-password', [NewPasswordController::class, 'forgotPassword']);
     Route::post('password/reset', [NewPasswordController::class, 'reset']);
@@ -54,11 +59,11 @@ Route::group(['prefix' => 'v1'], function () {
      Route::delete('/users/{id}', [UserController::class, 'delete']);
      
        //  organization route
-    Route::get('/organization', [OrganizationController::class, 'index']);
-    Route::get('/organization/{id}', [OrganizationController::class, 'show']);
-    Route::post('organization', [OrganizationController::class, 'store']);
-    Route::patch('/organization/{id}', [OrganizationController::class, 'update']);
-    Route::delete('/organization/{id}', [OrganizationController::class, 'delete']);
+    Route::get('/organizations', [OrganizationController::class, 'index']);
+    Route::get('/organizations/{id}', [OrganizationController::class, 'show']);
+    Route::post('organizations', [OrganizationController::class, 'store']);
+    Route::patch('/organizations/{id}', [OrganizationController::class, 'update']);
+    Route::delete('/organizations/{id}', [OrganizationController::class, 'delete']);
 
        //  Role route
     Route::get('/roles', [RoleController::class, 'index']);
@@ -66,6 +71,13 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('roles', [RoleController::class, 'store']);
     Route::patch('/roles/{id}', [RoleController::class, 'update']);
     Route::delete('/roles/{id}', [RoleController::class, 'delete']);
+        
+    // departments result
+    Route::get('/departments', [DepartmentController::class, 'index']);
+    Route::get('/departments/{id}', [DepartmentController::class, 'show']);
+    Route::post('departments', [DepartmentController::class, 'store']);
+    Route::patch('/departments/{id}', [DepartmentController::class, 'update']);
+    Route::delete('/departments/{id}', [DepartmentController::class, 'delete']);
 
         // permission Route
     Route::get('/roles', [PermissionController::class, 'index']);
@@ -83,10 +95,29 @@ Route::group(['prefix' => 'v1'], function () {
 
     // profile Route
     Route::get('/profiles', [ProfileController::class, 'index']);
-    Route::get('/profiles/{id}', [ProfileController::class, 'show']);
+    Route::get('/staff-profiles/{id}', [ProfileController::class, 'staffProfile']);
+    Route::get('/student-profiles/{id}', [ProfileController::class, 'studentProfile']);
     Route::post('profiles', [ProfileController::class, 'store']);
     Route::patch('/profiles/{id}', [ProfileController::class, 'update']);
     Route::delete('/profiles/{id}', [ProfileController::class, 'delete']);
+    
+    // profile course
+    Route::get('/courses', [CourseController::class, 'index']);
+    Route::get('/courses/{id}', [CourseController::class, 'show']);
+    Route::get('/courses/{id}', [CourseController::class, 'filter']);
+    Route::post('courses', [CourseController::class, 'store']);
+    Route::patch('/courses/{id}', [CourseController::class, 'update']);
+    Route::delete('/courses/{id}', [CourseController::class, 'delete']);
+    
+    // profile result
+    Route::get('/results', [ResultController::class, 'index']);
+    Route::get('/results/{id}', [ResultController::class, 'show']);
+    Route::get('/results/{id}', [ResultController::class, 'filter']);
+    Route::post('results', [ResultController::class, 'store']);
+    Route::patch('/results/{id}', [ResultController::class, 'update']);
+    Route::delete('/results/{id}', [ResultController::class, 'delete']);
+
+    
     
       //winner routes
     // Route::get('/winner/{id}', [WinnerController::class, 'show']);

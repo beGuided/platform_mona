@@ -9,7 +9,7 @@ class Organization extends Model
 {
     use HasFactory;
 
-    protected $fillable  = ['name', 'type','size','email','address','phone_number','website_link'];
+    protected $fillable  = ['name','type','size','email','address','phone_number','website_link'];
        
      // Relationship To User
      public function user() {

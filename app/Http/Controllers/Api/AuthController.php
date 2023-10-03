@@ -14,13 +14,14 @@ class AuthController extends Controller
 {   
 
    
-    public function register(Request $request)
+    public function registerStaff(Request $request)
     {
   
         $formFields = $request->validate([
             'name' => ['required', 'min:3'],
             'staff_id' =>'required|unique:users',
-            'email' => ['required', 'email', Rule::unique('users', 'email')],
+            'role_id' =>'required',
+            // 'email' => ['required', 'email', Rule::unique('users', 'email')],
             'password' => 'required|min:6|confirmed'
         ]);
 
@@ -28,33 +29,33 @@ class AuthController extends Controller
         $formFields['password'] = bcrypt($formFields['password']);
         $user = User::create($formFields);
 
-        event(new Registered($user));
+        // event(new Registered($user));
         $token = $user->createToken('myapptoken')->plainTextToken;
        
         $response = [
-            'message' => 'Registration successful. Please check your email for verification link.',
-             'user'=> $user, 'token' => $token   ];
+            'message' => 'Registration successful.',
+            'user'=> $user, 'token' => $token   ];
         return response($response, 201); 
 
     }
 
-    public function verifyEmail($id, $hash)
-    {
-        $user = User::find($id);
-        abort_if(!$user, 405);
-        abort_if(!hash_equals($hash, sha1($user->getEmailForVerification())), 405);
+    // public function verifyEmail($id, $hash)
+    // {
+    //     $user = User::find($id);
+    //     abort_if(!$user, 405);
+    //     abort_if(!hash_equals($hash, sha1($user->getEmailForVerification())), 405);
 
-        if (!$user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
-            event(new Verified($user));        
-            }
-            return [   'message' => 'Email verified', 'status'=>true     ];
+    //     if (!$user->hasVerifiedEmail()) {
+    //         $user->markEmailAsVerified();
+    //         event(new Verified($user));        
+    //         }
+    //         return [   'message' => 'Email verified', 'status'=>true     ];
         
-    }
+    // }
 
 
       // Show Login Form
-      public function login(Request $request) {
+      public function loginStaff(Request $request) {
         $formFields = $request->validate([
             'staff_id' => 'required',
             'password' => 'required|min:6'
@@ -68,13 +69,13 @@ class AuthController extends Controller
                 'message' => 'Invalid login creds'
             ], 401);
         }
-        if($user->email_verified_at == null) {
-            $user->sendEmailVerificationNotification();
-            return response([
-                'message' => 'Please check your email for verification link',
-                'status'=>false
-            ], 401);
-        }
+        // if($user->email_verified_at == null) {
+        //     $user->sendEmailVerificationNotification();
+        //     return response([
+        //         'message' => 'Please check your email for verification link',
+        //         'status'=>false
+        //     ], 401);
+        // }
        $token = $user->createToken('myapptoken')->plainTextToken;
        
         $response = [ 
