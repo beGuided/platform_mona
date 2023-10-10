@@ -22,7 +22,7 @@ class UserTableSeeder extends Seeder
             'name'=> 'Admin',
             'staff_id'=>'123',
             'email'=> 'admin@email.com',
-            'role_id'=>1,
+            'role_id'=>'admin',
             'email_verified_at' => now(),
             'password' => Hash::make('secret')
             ]);

@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use  App\Models\User;
+use  App\Models\Student;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
@@ -18,21 +18,22 @@ class StudentAuthController extends Controller
     {
   
         $formFields = $request->validate([
-            'name' => ['required', 'min:3'],
+            'first_name' => ['required', 'min:3'],
+            'last_name' => ['required', 'min:3'],
             'matric_number' => 'required|unique:students',
             'password' => 'required|min:6'
         ]);
 
         // Hash Password
         $formFields['password'] = bcrypt($formFields['password']);
-        $user = User::create($formFields);
+        $student = Student::create($formFields);
 
-        // event(new Registered($user));
-        $token = $user->createToken('myapptoken')->plainTextToken;
+        // event(new Registered($student));
+        $token = $student->createToken('myapptoken')->plainTextToken;
        
         $response = [
              'message' => 'Registration successful.',
-             'user'=> $user, 'token' => $token   ];
+             'student'=> $student, 'token' => $token   ];
         return response($response, 201); 
 
     }
@@ -45,33 +46,30 @@ class StudentAuthController extends Controller
         ]);
 
         // Hash Password
-        $user = User::where('matric_number', $formFields['matric_number'])->first();
+        $student = Student::where('matric_number', $formFields['matric_number'])->first();
 
-        if(!$user || !Hash::check($formFields['password'], $user->password)) {
+        if(!$student || !Hash::check($formFields['password'], $student->password)) {
             return response([
                 'message' => 'Invalid login creds'
             ], 401);
         }
-         
-       $token = $user->createToken('myapptoken')->plainTextToken;
-       
+       $token = $student->createToken('myapptoken')->plainTextToken;
         $response = [ 
-            'user'=> $user, 
-            'token' => $token   ];
+            'student'=> $student, 'token' => $token   ];
         return response($response, 201); 
     }
 
 
 
-    // Logout User
+    // Logout student
     public function logout(Request $request) {
-        $request->user()->currentAccessToken()->delete();
+        $request->student()->currentAccessToken()->delete();
        
         return [
             'message' => 'Logged out'
         ];
     }
   
-    // Authenticate User
+    // Authenticate student
    
 }

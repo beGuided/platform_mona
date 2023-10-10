@@ -4,13 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class student extends Model
+class Student extends Authenticatable
 {
-    use HasFactory;
+    use  HasApiTokens, HasFactory;
 
-    protected $fillable =['name','matric_number','password'];
+    protected $fillable =['first_name','last_name','matric_number','password',];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
      // Relationship To Profile
      public function profile()

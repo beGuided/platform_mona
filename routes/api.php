@@ -6,16 +6,21 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ResultController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\OrganizationController;
+
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\NewPasswordController;
+use App\Http\Controllers\Api\StudentAuthController;
+use App\Http\Controllers\Api\SocialLoginController;
+
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\StudentController;
-use App\Http\Controllers\Student\CourseController;
-use App\Http\Controllers\Api\NewPasswordController;
-use App\Http\Controllers\Api\SocialLoginController;
 use App\Http\Controllers\User\DepartmentController;
+use App\Http\Controllers\User\SemesterController;
+use App\Http\Controllers\User\UserController;
+
+use App\Http\Controllers\Student\CourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,8 +39,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/register-staff', [AuthController::class, 'registerStaff']);
     Route::post('/login-staff', [AuthController::class, 'loginStaff']);
     // student auth routh
-    Route::post('/register-student', [StudentController::class, 'registerStudent']);
-    Route::post('/login-student', [StudentController::class, 'loginStudent']);
+    Route::post('/register-student', [StudentAuthController::class, 'registerStudent']);
+    Route::post('/login-student', [StudentAuthController::class, 'loginStudent']);
 
     Route::post('password/forgot-password', [NewPasswordController::class, 'forgotPassword']);
     Route::post('password/reset', [NewPasswordController::class, 'reset']);
@@ -79,7 +84,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::patch('/departments/{id}', [DepartmentController::class, 'update']);
     Route::delete('/departments/{id}', [DepartmentController::class, 'delete']);
 
-        // permission Route
+        // role Route
     Route::get('/roles', [PermissionController::class, 'index']);
     Route::get('/premissions/{id}', [PermissionController::class, 'show']);
     Route::post('premissions', [PermissionController::class, 'store']);
@@ -101,15 +106,22 @@ Route::group(['prefix' => 'v1'], function () {
     Route::patch('/profiles/{id}', [ProfileController::class, 'update']);
     Route::delete('/profiles/{id}', [ProfileController::class, 'delete']);
     
-    // profile course
+    //  course route
     Route::get('/courses', [CourseController::class, 'index']);
     Route::get('/courses/{id}', [CourseController::class, 'show']);
     Route::get('/courses/{id}', [CourseController::class, 'filter']);
     Route::post('courses', [CourseController::class, 'store']);
     Route::patch('/courses/{id}', [CourseController::class, 'update']);
     Route::delete('/courses/{id}', [CourseController::class, 'delete']);
-    
-    // profile result
+     // semester route
+     Route::get('/semesters', [SemesterController::class, 'index']);
+     Route::get('/semesters/{id}', [SemesterController::class, 'show']);
+     Route::get('/semesters/{id}', [SemesterController::class, 'filter']);
+     Route::post('semesters', [SemesterController::class, 'store']);
+     Route::patch('/semesters/{id}', [SemesterController::class, 'update']);
+     Route::delete('/semesters/{id}', [SemesterController::class, 'delete']);
+     
+    // prererofile result
     Route::get('/results', [ResultController::class, 'index']);
     Route::get('/results/{id}', [ResultController::class, 'show']);
     Route::get('/results/{id}', [ResultController::class, 'filter']);

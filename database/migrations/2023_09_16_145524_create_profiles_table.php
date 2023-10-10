@@ -23,7 +23,6 @@ return new class extends Migration
             $table->integer('department_id')->unsigned();
             $table->integer('level_id')->unsigned()->nullable();
             $table->string('state_of_origin');
-            $table->integer('level_id')->unsigned()->nullable();
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('student_id')->unsigned()->nullable();
             $table->string('image')->nullable();

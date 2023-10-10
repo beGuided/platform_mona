@@ -17,14 +17,14 @@ class UserController extends Controller
 
     public function __construct()
     {
-    //  $this->middleware('admin')->only([ 'index','makeAdmin', 'makeUser', 'delete', 'store',  ]);
+     $this->middleware('admin')->only([ 'index','show', 'makeAdmin','makeUser','store', 'delete',  ]);
    
     }
 
     
     public function index() {
 
-        $allUsers = User::with('')->get();
+        $allUsers = User::with('profile')->get();
       // $alluser = User::all();
        return response()->json( ['User' => $allUsers,'status'=>true], 200);
         
@@ -32,7 +32,8 @@ class UserController extends Controller
 
     //Show single user
     public function show(Request $request ) {
-       $user =User::with('')->find($request->id);
+        
+       $user = User::with('profile')->find($request->id);
         return response()->json(['user'=>$user,'status'=>true],200);
     }
 
@@ -41,7 +42,7 @@ class UserController extends Controller
         $role = Role::all();
         if(empty( $role)){
             return response()->json(
-                ['message' => "Role is empty, please create ROle",
+                ['message' => "Role is empty, please create Role",
                 'status'=>true   ]);
         }
         
@@ -65,7 +66,6 @@ class UserController extends Controller
             'staff_id'=>'string',
             'role_id'=>'',
             // 'email' => ['required', 'email', Rule::unique('users', 'email')],
-       
         ]);
 
         $user = User::find($request->id);
@@ -80,7 +80,7 @@ class UserController extends Controller
     public function makeAdmin(Request $request)
     {
        $user = User::find($request->id);
-       $user->role = 'admin';
+       $user->role_id = 'admin';
        $user->save();
         return response(['message' => $user->name.' is now an admin.','status'=>true], 200); 
 
@@ -89,16 +89,13 @@ class UserController extends Controller
     public function makeUser(Request $request)
     {
        $user = User::find($request->id);
-       $user->role = 'user';
+       $user->role_id = 'student';
        $user->save();
         return response(['message' => $user->name.' is now a user.','status'=>true], 200); 
     }
 
-
-
     // Delete user with profile
-    public function delete(Request $request) {  
-        
+    public function delete(Request $request) {       
         $user = User::with('profile')->find($request->id);
       
         if(empty( $user)){
