@@ -17,7 +17,7 @@ class SemesterController extends Controller
     public function store(Request $request)
     {
         $formFields = $request->validate([ 
-            'title' => 'required|unique:Semesters',
+            'title' => 'required',
         ]); 
         $semester = Semester::create($formFields);
         $semester->save();
@@ -32,13 +32,19 @@ class SemesterController extends Controller
     }
 
     
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $this->validate($request, [ 
-            'title' => 'required',
-        ]); 
-        $semester =  Semester::find($id);
-        $semester->title = $request->title;
+        // $this->validate($request, [ 
+        //     'title' => 'required',
+        // ]); 
+
+        $semester =  Semester::find($request->id);
+        if($semester->title == 'first'){
+            
+            $semester->title = 'second';
+        }else{
+            $semester->title = 'first';
+        }
     
         $semester->save();
         return response()->json(['semester'=>$semester,'message' =>'semester updated'],201);
@@ -48,7 +54,7 @@ class SemesterController extends Controller
     
     public function delete($id)
     {
-        $semester =  semester::find($id);
+        $semester =  Semester::find($id);
         $semester->delete();
         return response()->json('semester deleted ');
     }

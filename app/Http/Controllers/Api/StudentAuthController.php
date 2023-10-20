@@ -13,7 +13,11 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 class StudentAuthController extends Controller
 {   
 
+    public function __construct()
+    {
+     $this->middleware('admin')->only([ 'registerStudent',  ]);
    
+    }
     public function registerStudent(Request $request)
     {
   
@@ -37,6 +41,7 @@ class StudentAuthController extends Controller
         return response($response, 201); 
 
     }
+
 
       // Show Login Form
       public function loginStudent(Request $request) {

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('date_of_birth')->nullable();
             $table->string('email')->unique()->nullable();
             $table->integer('department_id')->unsigned();
-            $table->integer('level_id')->unsigned()->nullable();
+            $table->bigInteger('level')->default('100');
             $table->string('state_of_origin');
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('student_id')->unsigned()->nullable();

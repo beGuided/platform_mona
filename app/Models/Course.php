@@ -9,7 +9,7 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title','code','unit','level'];
+    protected $fillable = ['title','code','unit','level','semester'];
    
          // Relationship To User
          public function student() {
@@ -23,11 +23,11 @@ class Course extends Model
 
        // Relationship To Course
        public function departments() {
-        return $this->hasMany(Department::class, 'department_id');
+        return $this->belongsToMany(Department::class);
     }
 
-      // Relationship To Course
-      public function students() {
-        return $this->hasMany(Student::class, 'student_id');
-    }
+   // Relationship To Course
+   public function registers() {
+    return $this->belongsToMany(Register::class);
+}
 }

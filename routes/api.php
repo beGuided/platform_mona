@@ -17,10 +17,13 @@ use App\Http\Controllers\Api\SocialLoginController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\StudentController;
 use App\Http\Controllers\User\DepartmentController;
-use App\Http\Controllers\User\SemesterController;
+
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\LevelController;
 
 use App\Http\Controllers\Student\CourseController;
+use App\Http\Controllers\Student\RegisterCourseController;
+use App\Http\Controllers\SemesterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +62,7 @@ Route::group(['prefix' => 'v1'], function () {
      //user routes
      Route::get('/users', [UserController::class, 'index']);
      Route::get('/users/{id}', [UserController::class, 'show']);
+     Route::post('users', [UserController::class, 'store']);
      Route::post('/users/make-admin/{id}', [UserController::class, 'makeAdmin']);
      Route::post('/users/make-user/{id}', [UserController::class, 'makeUser']);
      Route::delete('/users/{id}', [UserController::class, 'delete']);
@@ -67,7 +71,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/organizations', [OrganizationController::class, 'index']);
     Route::get('/organizations/{id}', [OrganizationController::class, 'show']);
     Route::post('organizations', [OrganizationController::class, 'store']);
-    Route::patch('/organizations/{id}', [OrganizationController::class, 'update']);
+    Route::post('/organizations/{id}', [OrganizationController::class, 'update']);
     Route::delete('/organizations/{id}', [OrganizationController::class, 'delete']);
 
        //  Role route
@@ -109,19 +113,23 @@ Route::group(['prefix' => 'v1'], function () {
     //  course route
     Route::get('/courses', [CourseController::class, 'index']);
     Route::get('/courses/{id}', [CourseController::class, 'show']);
-    Route::get('/courses/{id}', [CourseController::class, 'filter']);
     Route::post('courses', [CourseController::class, 'store']);
-    Route::patch('/courses/{id}', [CourseController::class, 'update']);
+    Route::post('/courses/{id}', [CourseController::class, 'update']);
     Route::delete('/courses/{id}', [CourseController::class, 'delete']);
+
      // semester route
      Route::get('/semesters', [SemesterController::class, 'index']);
      Route::get('/semesters/{id}', [SemesterController::class, 'show']);
-     Route::get('/semesters/{id}', [SemesterController::class, 'filter']);
+     Route::get('/semesters/filter/{id}', [SemesterController::class, 'filter']);
      Route::post('semesters', [SemesterController::class, 'store']);
      Route::patch('/semesters/{id}', [SemesterController::class, 'update']);
      Route::delete('/semesters/{id}', [SemesterController::class, 'delete']);
+
+  // update student level route
+     Route::get('/levels/next-level', [LevelController::class, 'nextLevel']);
+     Route::get('/levels/prev-level', [LevelController::class, 'prevLevel']);
      
-    // prererofile result
+    //  result route
     Route::get('/results', [ResultController::class, 'index']);
     Route::get('/results/{id}', [ResultController::class, 'show']);
     Route::get('/results/{id}', [ResultController::class, 'filter']);
@@ -129,7 +137,14 @@ Route::group(['prefix' => 'v1'], function () {
     Route::patch('/results/{id}', [ResultController::class, 'update']);
     Route::delete('/results/{id}', [ResultController::class, 'delete']);
 
-    
+         
+    //  result route
+    Route::get('/registers', [RegisterCourseController::class, 'index']);
+    Route::get('/registers/{id}/{level}/{year}', [RegisterCourseController::class, 'currentRegisteredCourse']);
+    Route::get('/registers/filter/{id}', [RegisterCourseController::class, 'filter']);
+    Route::post('registers', [RegisterCourseController::class, 'store']);
+    Route::patch('/registers/{id}', [RegisterCourseController::class, 'update']);
+    Route::delete('/registers/{id}', [RegisterCourseController::class, 'delete']);
     
       //winner routes
     // Route::get('/winner/{id}', [WinnerController::class, 'show']);

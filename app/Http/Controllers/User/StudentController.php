@@ -13,7 +13,7 @@ class StudentController extends Controller
 
     public function __construct()
     {
-     $this->middleware('admin')->only([ 'index','show', 'store', 'delete',  ]);
+     $this->middleware('admin')->only(['', 'store', 'delete']);
    
     }
 
@@ -33,6 +33,7 @@ class StudentController extends Controller
 
     public function store(Request $request)
     { 
+
         $formFields = $request->validate([
             'first_name' => ['required', 'min:3'],
             'last_name' => ['required', 'min:3'],
@@ -45,8 +46,6 @@ class StudentController extends Controller
 
          $student = Student::create($formFields);
          $token = $student->createToken('myapptoken')->plainTextToken;
- 
-        $student = Student::create($formFields);
         return response()->json(['data'=>$student, 'token' => $token,  'message'=>'student Created '],201);
          }
 

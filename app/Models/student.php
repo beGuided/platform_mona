@@ -34,9 +34,9 @@ class Student extends Authenticatable
      {
          return $this->hasOne(Department::class);
      }
-      // Relationship To Course
-      public function courses() {
-         return $this->hasMany(Course::class, 'course_id');
+      // Relationship To register
+      public function registers() {
+         return $this->hasMany(Register::class);
      }
      
     

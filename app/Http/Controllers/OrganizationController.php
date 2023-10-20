@@ -47,14 +47,16 @@ class OrganizationController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [ 
-            'name' => 'required|string|max:255',
-            'type' =>'required|string|max:255',
-            'size' =>'required|string|max:255',  
-            'email' =>'required|unique:organizations|string|max:255',         
-            'address' =>'required|string|max:255',  
-            'phone_number' => ' required|string|max:25',  
+            'name' => 'string|max:255',
+            'type' =>'string|max:255',
+            'size' =>'string|max:255',  
+            'email' =>'unique:organizations|string|max:255',         
+            'address' =>'string|max:255',  
+            'phone_number' => ' string|max:25',  
             'website_link' => ' nullable|string|max:255',       
         ]); 
+
+
         $organization =  Organization::find($id);
         $organization->name = $request->name;
         $organization->type = $request->type;

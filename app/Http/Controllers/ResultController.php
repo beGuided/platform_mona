@@ -59,15 +59,13 @@ class ResultController extends Controller
         $formFields = $request->validate([ 
             'name' => 'required|string',
             'matric_number' =>'required|string',
-            'student_email' =>'required|unique:results|string',  
             'semester' =>'required|string',         
-            'course_id' =>'required',  
-            'score' =>'required|string',  
+            'level' =>'required',   
             'year' => 'required|string',  
             
         ]); 
 
-        $result = result::create($formFields);
+        $result = Result::create($formFields);
         return response()->json(['data'=>$result,'message'=>'result Created '],200);
     }
 
@@ -83,7 +81,7 @@ class ResultController extends Controller
             'score' =>'string',  
             'year' => 'string',  
         ]); 
-        $result =  result::find($id);
+        $result =  Result::find($id);
         $result->name = $request->name;
         $result->matric_number = $request->matric_number;
         $result->student_email = $request->student_email;
@@ -97,7 +95,7 @@ class ResultController extends Controller
 
     public function delete($id)
     {
-        $result =  result::find($id);
+        $result =  Result::find($id);
         $result->delete();
         return response()->json('result deleted successful');
     }

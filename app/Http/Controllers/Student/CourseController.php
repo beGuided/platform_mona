@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Student;
 
 use App\Models\Course;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -18,7 +19,7 @@ class CourseController extends Controller
 
      public function __construct()
     {
-     $this->middleware('admin')->only([ 'show','update','delete', 'store',  ]);
+     $this->middleware('admin')->only([ 'index','show','update','delete', 'store', ]);
    
     }
  
@@ -28,37 +29,34 @@ class CourseController extends Controller
         return response()->json(['Course'=>$allCourse],200);
     }
 
-
-    public function show(Request $request, $student_id,$semester,$level)
+    public function show(Request $request)
     {
-         // Make sure logged in user is owner
-         if($request->id != auth()->id()) {
-            abort(403, 'Unauthorized Action',);
-        }
-
-        // find Course by matric and email
-        $student = DB::table('course_students')
-                ->where($student->student_id, '=', $student_id)
-                ->where('level', '=', $level)
-                ->where('semester', '=', $semester)
-                ->get();
-        return response()->json(['Course'=>$student],200);
+        $course = Course::find($request->id);
+        return response()->json(['Course'=>$course],200);
     }
+
+
+    // public function show(Request $request)
+    // {
+    //      // Make sure logged in user is owner
+    //      if($request->id != auth()->id()) {
+    //         abort(403, 'Unauthorized Action',);
+    //     }
+
+    //     // find Course by matric and email
+    //     $student = DB::table('course_students')
+    //             ->where($student->student_id, '=', $student_id)
+    //             ->where('level', '=', $level)
+    //             ->where('semester', '=', $semester)
+    //             ->get();
+    //     return response()->json(['Course'=>$student],200);
+    // }
 
 
     /* for admins access only
-    filter for admin to find student Course*/
+    filter for admin to find student Course by matric number*/
 
-    public function filter(Request $request)
-    {
-        $request->validate([
-            'matric_number'=>$request->matric_number
-        ]);
-
-        $Courses = DB::table('Courses')->where('matric_number', '=', $$request->matric_number);
-        return response()->json(['Course'=>$Courses],200);
-    }
-
+ 
 
      // for admins access only
     public function store(Request $request)
@@ -77,22 +75,23 @@ class CourseController extends Controller
     }
 
     // for admins access only
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $this->validate($request, [ 
+        $this->validate($request,[ 
             'title' => 'unique:Courses|string',
             'code' =>'string',
             'unit' =>'',  
-            'level' =>'string',  
+            'level' =>'integer',  
             'semester' =>'string',    
         ]); 
-        $Course =  Course::find($id);
-        $Course->title = $request->title;
-        $Course->code = $request->code;
-        $Course->unit = $request->unit;
-        $Course->level = $request->level;
-        $Course->save();
-        return response()->json(['data'=>$Course,'message'=>'Course updated '],201);
+      
+        $course =  Course::find($request->id);
+        $course->title = $request->title;
+        $course->code = $request->code;
+        $course->unit = $request->unit;
+        $course->level = $request->level;
+        $course->save();
+        return response()->json(['data'=>$course,'message'=>'Course updated '],201);
     }
 
     public function delete($id)

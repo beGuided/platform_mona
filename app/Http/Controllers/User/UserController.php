@@ -39,24 +39,29 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $role = Role::all();
-        if(empty( $role)){
-            return response()->json(
-                ['message' => "Role is empty, please create Role",
-                'status'=>true   ]);
-        }
+        // $role = Role::all();
+        // if($role->isEmpty()){
+        //     return response()->json(
+        //         ['message' => "Role is empty, please create Role",
+        //         'status'=>true ]);
+        // }
         
         $formFields = $request->validate([
             'name' => ['required', 'min:3'],
-            'staff_id'=>'required',
+            'staff_id'=>'required|unique:users',
             'role_id'=>'required',
             // 'email' => ['required', 'email', Rule::unique('users', 'email')],
             'password' => 'required|min:6'
         ]);
-
+           // Hash Password
+           $formFields['password'] = bcrypt($formFields['password']);
+           $user = User::create($formFields);
+   
+           $token = $user->createToken('myapptoken')->plainTextToken;
         $user = User::create($formFields);
 
-        return response()->json(['data'=>$user,'message'=>'user Created '],200);
+
+        return response()->json(['data'=>$user,'token'=>$token,'message'=>'user Created '],201);
     }
 
     public function update(Request $request)
@@ -98,7 +103,7 @@ class UserController extends Controller
     public function delete(Request $request) {       
         $user = User::with('profile')->find($request->id);
       
-        if(empty( $user)){
+        if($user->isEmpty()){
             return response()->json(
                 [ 'message' => "user do not exist",
                   'status'=>false ]);
@@ -111,8 +116,6 @@ class UserController extends Controller
                 
                 }
              }
-
-
          $user->delete();
          return response()->json([ 'message'=>'User deleted successfully!','status'=>true],200);
 
