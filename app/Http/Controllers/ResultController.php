@@ -2,38 +2,61 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
+use App\Models\Semester;
 use App\Models\Result;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Date;
 
 class ResultController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
+     
+    //  public function __construct()
+    // {
+    //  $this->middleware(['admin','staff'])->only([ 'filter','delete','show']);
+   
+    // }
  
     public function index()
     {
         $allResult =  Result::all();
-        return response()->json(['result'=>$allResult],200);
+        return response()->json(['results'=>$allResult],200);
     }
 
 
-    public function show(Request $request, $mat,$semester,$level)
+    public function show(Request $request,)
     {
          // Make sure logged in user is owner
          if($request->id != auth()->id()) {
             abort(403, 'Unauthorized Action',);
         }
 
+        $currentYear = Date::now()->year;
         // find result by matric and email
-        $result = DB::table('results')
-                ->where('matric_number', '=', $mat)
-                ->where('level', '=', $level)
-                ->where('semester', '=', $semester)
+        $result = Result::with('course')
+                ->where('user_id',$request->id )
+                ->where('year', $currentYear)
+                ->get();
+        return response()->json(['result'=>$result],200);
+    }
+
+
+    public function showStudentResult(Request $request,)
+    {
+         // Make sure logged in user is owner
+         if($request->id != auth()->id()) {
+            abort(403, 'Unauthorized Action',);
+        }
+
+        $semester =  Semester::find(1);
+        $student = Student::find($request->id); 
+        $currentYear = Date::now()->year;
+        // find result by matric and email
+        $result = Result::with('course')
+                ->where('matric_number', $student->matric_number)
+                ->where('semester', $semester->title)
+                ->where('year', $currentYear)
                 ->get();
         return response()->json(['result'=>$result],200);
     }
@@ -47,8 +70,11 @@ class ResultController extends Controller
         $request->validate([
             'matric_number'=>$request->matric_number
         ]);
-
-        $results = DB::table('results')->where('matric_number', '=', $$request->matric_number);
+        $currentYear = Date::now()->year;
+        $results = DB::table('results')
+        ->where('matric_number', $request->matric_number)
+        ->where('year', $currentYear)
+        ->get();
         return response()->json(['result'=>$results],200);
     }
 
@@ -59,12 +85,15 @@ class ResultController extends Controller
         $formFields = $request->validate([ 
             'name' => 'required|string',
             'matric_number' =>'required|string',
-            'semester' =>'required|string',         
-            'level' =>'required',   
+            'semester' =>'required|string',  
+            // 'CA' =>'integer',  
+            // 'exam' =>'integer',         
+            // 'score' =>'integer',   
             'year' => 'required|string',  
+            'course_id'=>'required'
             
         ]); 
-
+        
         $result = Result::create($formFields);
         return response()->json(['data'=>$result,'message'=>'result Created '],200);
     }
@@ -75,14 +104,15 @@ class ResultController extends Controller
         $this->validate($request, [ 
             'name' => 'string',
             'matric_number' =>'',
-            'student_email' =>'unique:results',  
             'semester' =>'string',         
-            'course_id' =>'',  
-            'score' =>'string',  
+            'course_id' =>'', 
+             'CA' =>'integer',  
+            'exam' =>'',         
+            'score' =>'',  
             'year' => 'string',  
         ]); 
         $result =  Result::find($id);
-        $result->name = $request->name;
+       // $result->name = $request->name;
         $result->matric_number = $request->matric_number;
         $result->student_email = $request->student_email;
         $result->semester = $request->semester;

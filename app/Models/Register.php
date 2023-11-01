@@ -9,7 +9,7 @@ class Register extends Model
 {
     use HasFactory;
 
-    protected $fillable =['semester','level','year',];
+    protected $fillable =['semester','level','year','student_id'];
 
            // Relationship To student
      public function student() {

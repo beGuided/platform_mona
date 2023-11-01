@@ -50,27 +50,27 @@ class StudentController extends Controller
          }
 
 
-     // Delete profile
-//      public function delete(Request $request) {  
+     //Delete Student
+     public function delete(Request $request) {  
         
-//         $student = Student::with('profile')->find($request->id);
+        $student = Student::with('profile')->find($request->id);
       
-//         if(empty( $student)){
-//             return response()->json(
-//                 [ 'message' => "student do not exist",
-//                   'status'=>false ]);
-//         }
-//          if(!empty($student->profile->image)) {
-//           if($student->profile->image && Storage::disk('public')->exists($student->profile->image)) {
-//             Storage::disk('public')->delete($student->profile->image);            
+        if( $student->isEmpty()){
+            return response()->json(
+                [ 'message' => "student do not exist",
+                  'status'=>false ]);
+        }
+         if(!empty($student->profile->image)) {
+          if($student->profile->image && Storage::disk('public')->exists($student->profile->image)) {
+            Storage::disk('public')->delete($student->profile->image);            
            
-//             $student->profile->delete();     
+            $student->profile->delete();     
                 
-//                 }
-//              }
-//          $student->delete();
-//          return response()->json([ 'message'=>'student deleted successfully!','status'=>true],200);
+                }
+             }
+         $student->delete();
+         return response()->json([ 'message'=>'student deleted successfully!','status'=>true],200);
 
-// }
+}
 
 }

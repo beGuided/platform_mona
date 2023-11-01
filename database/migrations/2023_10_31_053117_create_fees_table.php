@@ -13,17 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('results', function (Blueprint $table) {
+        Schema::create('fees', function (Blueprint $table) {
             $table->id();
-            $table->integer('matric_number');
+            $table->unsignedBigInteger('RRR_id');
+            $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('amount');
+            $table->string('payment_type');
+            $table->string('current_session');
             $table->string('semester');
-            $table->unsignedBigInteger('CA')->default(0);
-            $table->unsignedBigInteger('exam')->default(0);
-            $table->unsignedBigInteger('score')->default(0);
-            $table->string('name');
-            $table->string('year');
-            $table->unsignedBigInteger('course_id');
-            $table->unsignedBigInteger('user_id');
+            $table->boolean('payment_status')->default(false);
+
             $table->timestamps();
         });
     }
@@ -35,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('results');
+        Schema::dropIfExists('fees');
     }
 };

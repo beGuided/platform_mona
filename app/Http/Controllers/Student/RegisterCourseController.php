@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Student;
 use App\Models\Student;
 use App\Models\Semester;
 use App\Models\Register;
-use App\Models\Profile;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Date;
 
 class RegisterCourseController extends Controller
 {
@@ -32,28 +31,29 @@ class RegisterCourseController extends Controller
     }
 
 
-        /* for admins access only
-    filter for admin to find student Course*/
+        /* ********************
+        for admins access only
+    filter for admin to find courese registered by student
+    *******************/
 
     public function filter(Request $request)
     {
 
         $student = Student::find($request->id); 
-        if ($student->registers->isEmpty()){
+        if (!$student || $student->registers->isEmpty()){
               return response()->json(
                   ['message' => "You don't have any course, please register",
-                  'status'=>false   ]);
+                  'status'=>false   ],404);
           }
-
-        //find courese registered by student
-        $register = DB::table('registers')->where('student_id', '=', $request->id)->get();
-        return response()->json(['Course'=>$register],200);
+        
+        $register = Register::with('courses')->where('student_id', '=', $request->id)->get();
+        return response()->json(['data'=>$register],200);
 
 
     }
 
 
-    public function currentRegisteredCourse(Request $request,$level,$year)
+    public function currentRegisteredCourse(Request $request,)
     {
        $semester =  Semester::find(1);
          // Make sure logged in user is owner
@@ -67,22 +67,19 @@ class RegisterCourseController extends Controller
                   ['message' => "You don't have any course, please register",
                   'status'=>false   ]);
           }
+             // Get the current year
+        $currentYear = Date::now()->year;
 
-        //find Course by level and email
-        $register = DB::table('registers')
-                ->where('student_id', '=', $request->id)
-                ->where('level', '=', $level)
-                ->where('semester', '=', $semester)
-                ->where('year', '=', $year)
+        $register = Register::with('courses')
+                ->where('student_id', $request->id)
+                ->where('level', $student->profile->level)
+                ->where('semester', $semester->title)
+                ->where('year', $currentYear)
                 ->get();
 
-        return response()->json(['Course'=>$register],200);
-
+        return response()->json(['data'=>$register,'message' => "registered course for this semester"],200);
 
     }
-
-
-
 
 
 
@@ -90,24 +87,26 @@ class RegisterCourseController extends Controller
     public function store(Request $request)
     {
         $student = Student::find(auth()->id());
+        $semester = Semester::find(1);
+
         if ($student->profile == null){
             return response()->json(
                 ['message' => "You have not created any profile",
                 'status'=>false   ]);
         }
-        $formFields = $request->validate([ 
-            'level' =>'required', 
-            'semester' =>'required|string', 
-            'year' =>'required|string',          
-         
+         $request->validate([ 
+            // 'year' =>'required|string',              
         ]); 
-    $register = new Register();
+        // Get the current year
+        $currentYear = Date::now()->year;
 
-    // $register->level = $request->level;
-    // $register->semester = $request->semester;
-    // $register->year = $request->year;
-    // $register->save();
-       $register =  Register::create($formFields);
+        $register = new Register();
+        $register->level = $student->profile->level;
+        $register->semester = $semester->title;
+        $register->year = $currentYear;
+        $register->student_id = auth()->id();
+        $register->save();
+
         if ($request->courses) {
             $register->courses()->attach($request->courses);
         }
@@ -121,21 +120,22 @@ class RegisterCourseController extends Controller
         $request->validate([ 
             'level' =>'string', 
             'semester' =>'string', 
-            'year' =>'string',          
-        
+            'year' =>'string',               
     ]); 
-   $register =  Register::find($request->id);
-   $register->level = $request->level;
-   $register->semester = $request->semester;
-   $register->year = $request->year;
+        $register =  Register::find($request->id);
+        $register->level = $request->level;
+        $register->semester = $request->semester;
+        $register->year = $request->year;
 
-   $register->save();
-    if ($request->has('courses')) {
-        $register->courses()->attach($request->input('courses'));
-    }
-        return response()->json(['data'=>$register,'message'=>'Registered courses updated '],201);
+        $register->save();
+        if ($request->has('courses')) {
+            $register->courses()->sync($request->courses);
+        }
+            return response()->json(['data'=>$register,'message'=>'Registered courses updated '],201);
         
     }
+
+
     public function delete($id)
     {
         $Course =  Register::find($id);

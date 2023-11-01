@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('semester');
             $table->string('level');
             $table->string('year');
-            $table->string('student_id');
+            $table->unsignedBigInteger('student_id');
             $table->timestamps();
         });
     }

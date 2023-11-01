@@ -36,7 +36,7 @@ class Student extends Authenticatable
      }
       // Relationship To register
       public function registers() {
-         return $this->hasMany(Register::class);
+         return $this->hasMany(Register::class,'student_id');
      }
      
     

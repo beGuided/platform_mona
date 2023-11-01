@@ -36,28 +36,6 @@ class CourseController extends Controller
     }
 
 
-    // public function show(Request $request)
-    // {
-    //      // Make sure logged in user is owner
-    //      if($request->id != auth()->id()) {
-    //         abort(403, 'Unauthorized Action',);
-    //     }
-
-    //     // find Course by matric and email
-    //     $student = DB::table('course_students')
-    //             ->where($student->student_id, '=', $student_id)
-    //             ->where('level', '=', $level)
-    //             ->where('semester', '=', $semester)
-    //             ->get();
-    //     return response()->json(['Course'=>$student],200);
-    // }
-
-
-    /* for admins access only
-    filter for admin to find student Course by matric number*/
-
- 
-
      // for admins access only
     public function store(Request $request)
     {
