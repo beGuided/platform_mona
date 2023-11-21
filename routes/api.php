@@ -5,25 +5,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\LevelController;
 use App\Http\Controllers\ResultController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\OrganizationController;
-
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\NewPasswordController;
-use App\Http\Controllers\Api\StudentAuthController;
-use App\Http\Controllers\Api\SocialLoginController;
 
+use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\Fees\FeesController;
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\PermissionController;
+
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\StudentController;
-use App\Http\Controllers\User\DepartmentController;
-
-use App\Http\Controllers\User\UserController;
-use App\Http\Controllers\LevelController;
 
 use App\Http\Controllers\Student\CourseController;
+use App\Http\Controllers\Api\NewPasswordController;
+
+use App\Http\Controllers\Api\SocialLoginController;
+use App\Http\Controllers\Api\StudentAuthController;
+use App\Http\Controllers\User\DepartmentController;
 use App\Http\Controllers\Student\RegisterCourseController;
-use App\Http\Controllers\SemesterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,17 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('login/{driver}', [SocialLoginController::class, 'redirectToProvider']);
     Route::get('login/{driver}/callback', [SocialLoginController::class, 'handleProviderCallback']);
     Route::get('/email/verify-email/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
+
+    Route::post('/paystack-payment', [FeesController::class, 'payStack']);
+    Route::post('/paystack-callback', [FeesController::class, 'payStackWebhook']);
+
+   //  Route::get('/results', [ResultController::class, 'index']);
+   //  Route::get('/results/{id}', [ResultController::class, 'show']);
+   //  Route::get('/results/student/{id}', [ResultController::class, 'showStudentResult']);
+   //  Route::get('/results/filter/{id}', [ResultController::class, 'filter']);
+   //  Route::post('results', [ResultController::class, 'store']);
+   //  Route::patch('/results/{id}', [ResultController::class, 'update']);
+   //  Route::delete('/results/{id}', [ResultController::class, 'delete']);
 
 });
 
@@ -146,7 +158,12 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('registers', [RegisterCourseController::class, 'store']);
     Route::post('/registers/{id}', [RegisterCourseController::class, 'update']);
     Route::delete('/registers/{id}', [RegisterCourseController::class, 'delete']);
-    
+
+
+   //  Fees paymernt
+
+   //  Route::post('/paystack-payment', [FeesController::class, 'initialisePaystack']);
+
       //winner routes
     // Route::get('/winner/{id}', [WinnerController::class, 'show']);
     // Route::post('winner/create', [WinnerController::class, 'store']);

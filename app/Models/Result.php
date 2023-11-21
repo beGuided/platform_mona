@@ -9,7 +9,7 @@ class Result extends Model
 {
     use HasFactory;
 
-    protected $fillable  = [ 'name','course_id','matric_number','semester','score','CA','exam','year'];
+    protected $fillable  = [ 'name','course_id','matric_number','semester','score','CA','exam','user_id','year'];
 
      // Relationship To User
      public function user() {

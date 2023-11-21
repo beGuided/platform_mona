@@ -93,7 +93,9 @@ class ResultController extends Controller
             'course_id'=>'required'
             
         ]); 
-        
+        $formFields['user_id'] =1;
+        // return response()->json(['data'=>$formFields,'message'=>'result Created '],200);
+
         $result = Result::create($formFields);
         return response()->json(['data'=>$result,'message'=>'result Created '],200);
     }
@@ -106,15 +108,14 @@ class ResultController extends Controller
             'matric_number' =>'',
             'semester' =>'string',         
             'course_id' =>'', 
-             'CA' =>'integer',  
+            'CA' =>'integer',  
             'exam' =>'',         
             'score' =>'',  
             'year' => 'string',  
         ]); 
         $result =  Result::find($id);
-       // $result->name = $request->name;
+       $result->name = $request->name;
         $result->matric_number = $request->matric_number;
-        $result->student_email = $request->student_email;
         $result->semester = $request->semester;
         $result->course_id = $request->course_id;
         $result->score = $request->score;

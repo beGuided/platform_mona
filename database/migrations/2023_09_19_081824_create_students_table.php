@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('role')->default('student');
             $table->string('matric_number');
+            $table->boolean('status')->default(false);
             $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();

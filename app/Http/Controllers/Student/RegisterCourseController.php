@@ -82,7 +82,6 @@ class RegisterCourseController extends Controller
     }
 
 
-
      // for admins access only
     public function store(Request $request)
     {
@@ -94,9 +93,15 @@ class RegisterCourseController extends Controller
                 ['message' => "You have not created any profile",
                 'status'=>false   ]);
         }
+        if ($student->status == 0){
+            return response()->json(
+                ['message' => "You have not paid school fees for this session",
+                'status'=>false   ]);
+        }
          $request->validate([ 
             // 'year' =>'required|string',              
         ]); 
+        
         // Get the current year
         $currentYear = Date::now()->year;
 

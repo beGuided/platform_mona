@@ -41,4 +41,9 @@ return [
         'redirect'      => env('FB_REDIRECT'),
     ],
 
+    'paystack' => [
+        'secret_key'     => env('PAYSTACK_SECRET_KEY'),
+    ],
+    
+
 ];

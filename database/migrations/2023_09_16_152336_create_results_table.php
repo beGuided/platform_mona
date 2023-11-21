@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('results', function (Blueprint $table) {
             $table->id();
-            $table->integer('matric_number');
+            $table->string('matric_number');
             $table->string('semester');
             $table->unsignedBigInteger('CA')->default(0);
             $table->unsignedBigInteger('exam')->default(0);

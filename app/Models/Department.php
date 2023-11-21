@@ -9,7 +9,7 @@ class Department extends Model
 {
     use HasFactory;
 
-    protected $fillable  = [ 'name'];
+    protected $fillable  = [ 'name','max_level'];
        
      // Relationship To User
      public function user() {
