@@ -103,7 +103,6 @@ class ProfileController extends Controller
     public function update(Request $request) {
       
         $profile = DB::table('profiles')->where('user_id', $request->id)->first();
-
         if(empty($profile)){
             return response()->json(['message' => "You don't have a profile, please create one",'status'=>true]);
         }

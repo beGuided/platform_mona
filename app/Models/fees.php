@@ -16,7 +16,7 @@ class fees extends Model
 
     
     protected $fillable =[
-        'RRR_id','student_id','amount','payment_type','payment_status','current_session',
+        'payment_id','student_id','amount','payment_type','payment_status','current_session',
         'semester'
     ];
 

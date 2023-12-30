@@ -10,16 +10,9 @@ class PermissionController extends Controller
     public function index()
     {
         $permission =  Permission::all();
-
         return response()->json($permission);
     }
 
-    public function create()
-    {
-        //
-    }
-
-  
     public function store(Request $request)
     {
         $formFields = $request->validate([ 
@@ -36,15 +29,9 @@ class PermissionController extends Controller
     public function show($id)
     {
         $permission =  Permission::find($id);
-
         return response()->json($permission);
     }
 
-   
-    public function edit($id)
-    {
-        //
-    }
 
     public function update(Request $request, $id)
     {

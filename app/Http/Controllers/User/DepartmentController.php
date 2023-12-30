@@ -32,6 +32,7 @@ class DepartmentController extends Controller
     // }
 
       //Show single  student Department
+
     public function show(Request $request ) {
         $student = Student::find($request->id);
          if(empty( $student->Department )){
@@ -48,6 +49,7 @@ class DepartmentController extends Controller
     public function store(Request $request) {
       $validatedField =  $request->validate([
             'name' => 'required|unique:departments',
+            'max_level' => 'required',
         ]);
     $userDepartment = Department::create($validatedField);
         return response()->json([
@@ -59,46 +61,29 @@ class DepartmentController extends Controller
     // Update Department Data
     public function update(Request $request) {
       
-        $Department = DB::table('Departments')->where('user_id', $request->id)->first();
-
-        if(empty($Department)){
-            return response()->json(['message' => "You don't have a Department, please create one",'status'=>true]);
-        }
-          // Make sure logged in user is owner
-          if($Department->user_id != auth()->id()) {
-              abort(403, 'Unauthorized Action',);
-          }
+        // $Department = DB::table('Departments')->where('user_id', $request->id)->first();
+        // if(empty($Department)){
+        //     return response()->json(['message' => "You don't have a Department, please create one",'status'=>true]);
+        // }
+        //   // Make sure logged in user is owner
+        //   if($Department->user_id != auth()->id()) {
+        //       abort(403, 'Unauthorized Action',);
+        //   }
 
          $request->validate([
             'name' => '',
+            'max_level' => ''
           
         ]);
            
-            $userDepartment =  Department::find($Department->id);
-
-           $userDepartment->gender = $request->gender;
-            $userDepartment->address = $request->address;
-            $userDepartment->phone_number = $request->phone_number;
-            $userDepartment->date_of_birth = $request->date_of_birth;
-            $userDepartment->level_id = $request->level_id;
-            $userDepartment->email = $request->email;
-            $userDepartment->state_of_origin = $request->state_of_origin;
-          
-            //check if image
-          if($request->hasFile('image')){
-            //upload it
-            $image = $request->file('image')->store('image', 'public');
-            //delete former image
-            Storage::disk('public')->delete($userDepartment->image);
-            
-            $userDepartment->image = $image;
-             }
-
+            $userDepartment =  Department::find($request->id);
+            $userDepartment->name = $request->name;
+            $userDepartment->max_level = $request->max_level;
            $userDepartment->save();
             
          return response()->json([
-            'message'=> 'Department updated successfully!',
-            'Department'=>$userDepartment,'status'=>true], 200);
+            'message'=> 'Department updated successfully!','status'=>true
+        ], 200);
    
     }
 

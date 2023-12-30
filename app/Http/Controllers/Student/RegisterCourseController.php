@@ -38,7 +38,6 @@ class RegisterCourseController extends Controller
 
     public function filter(Request $request)
     {
-
         $student = Student::find($request->id); 
         if (!$student || $student->registers->isEmpty()){
               return response()->json(

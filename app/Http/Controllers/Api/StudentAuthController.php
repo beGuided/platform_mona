@@ -15,7 +15,7 @@ class StudentAuthController extends Controller
 
     public function __construct()
     {
-     $this->middleware('admin')->only([ 'registerStudent',  ]);
+       $this->middleware('admin')->only([ 'registerStudent', ]);
    
     }
     public function registerStudent(Request $request)
@@ -42,7 +42,6 @@ class StudentAuthController extends Controller
 
     }
 
-
       // Show Login Form
       public function loginStudent(Request $request) {
         $formFields = $request->validate([
@@ -52,15 +51,13 @@ class StudentAuthController extends Controller
 
         // Hash Password
         $student = Student::where('matric_number', $formFields['matric_number'])->first();
-
         if(!$student || !Hash::check($formFields['password'], $student->password)) {
             return response([
                 'message' => 'Invalid login creds'
             ], 401);
         }
        $token = $student->createToken('myapptoken')->plainTextToken;
-        $response = [ 
-            'student'=> $student, 'token' => $token   ];
+        $response = ['student'=> $student, 'token' => $token   ];
         return response($response, 201); 
     }
 

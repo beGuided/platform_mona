@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('departments', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('max_level');
+           $table->string('max_level');
             $table->timestamps();
         });
     }

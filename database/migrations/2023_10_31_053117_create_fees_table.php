@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('fees', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('payment_id');
+            $table->string('payment_id');
             $table->unsignedBigInteger('student_id');
-            $table->unsignedBigInteger('amount');
+            $table->string('amount');
             $table->string('payment_type');
             $table->string('current_session');
             $table->string('semester');

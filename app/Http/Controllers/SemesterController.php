@@ -10,7 +10,6 @@ class SemesterController extends Controller
     public function index()
     {
         $semester =  Semester::all();
-
         return response()->json($semester);
     }
   
@@ -34,14 +33,11 @@ class SemesterController extends Controller
     
     public function update(Request $request)
     {
-        // $this->validate($request, [ 
-        //     'title' => 'required',
-        // ]); 
 
         $semester =  Semester::find($request->id);
         if($semester->title == 'first'){
-            
             $semester->title = 'second';
+
         }else{
             $semester->title = 'first';
         }
